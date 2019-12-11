@@ -1,5 +1,5 @@
 const Alexa = require('ask-sdk-core');
-const skillBuilder = Alexa.SkillBuilders.custom();
+
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -14,41 +14,27 @@ const LaunchRequestHandler = {
     }
 };
 
-function getInstitution(name) {
-    const url = url
-    return url.get('https://www.timeshighereducation.com/world-university-rankings/2020/world-ranking#!/page/0/length/25/sort_by/rank/sort_order/asc/cols/stats').then((respose) => {
-        return response.data.Institutions
-    })
-}
-const InstitutionsIntentHandler = {
-    canHandle(handlerInput) {
-        return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
-            handlerInput.requestEnvelope.request.intent.name === 'InstitutionsIntent'
-    },
-    handle(handlerInput) {
-        const Institutions = handlerInput.requestEnvelope.request.intent.slots.college.value
-        const answer = `Here are some of the colleges you requested`
-        const reprompt = 'Would you require some specific information on the areas'
+function getInstitutionsPublications(publications) {
+    return scholar.get('https://scholar.google.com/scholar?hl=en&as_sdt=0%2C60&q=biochemistry&btnG=')
 
-        return handlerInput.responseBuilder
-            .speak(answer + reprompt)
-            .reprompt(reprompt)
-            .withShouldEndSession(false)
-            .getResponse();
-    },
-};
 
-const ScholarshipIntentHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
-            Alexa.getIntentName(handlerInput.requestEnvelope) === 'ScholarshipIntent';
-    },
-    handle(handlerInput) {
-        const speakOutput = 'Interested in Scholarships';
-        return handlerInput.responseBuilder
-            .speak(speakOutput)
+    const InstitutionsIntentHandler = {
+        canHandle(handlerInput) {
+            return handlerInput.requestEnvelope.request.type === 'IntentRequest' &&
+                handlerInput.requestEnvelope.request.intent.name === 'InstitutionsIntent'
+        },
+        handle(handlerInput) {
+            const Institutions = InstitutionshandlerInput.requestEnvelope.request.intent.slots.college.value
+            const speakOutput = 'college articles in biochemistry'
+            const answer = `Here are some of the colleges you requested`
+            const reprompt = 'Would you require some specific information on the areas'
 
-            .getResponse();
+            return handlerInput.responseBuilder
+                .speak(answer + reprompt)
+                .reprompt(reprompt)
+                .withShouldEndSession(false)
+                .getResponse();
+        },
     }
 };
 const HelpIntentHandler = {
@@ -65,6 +51,16 @@ const HelpIntentHandler = {
             .getResponse();
     }
 };
+const SessionEndedRequestHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'SessionEndedRequest';
+    },
+    handle(handlerInput) {
+
+        return handlerInput.responseBuilder.getResponse();
+    }
+};
+
 const CancelAndStopIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
@@ -78,30 +74,6 @@ const CancelAndStopIntentHandler = {
             .getResponse();
     }
 };
-const SessionEndedRequestHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'SessionEndedRequest';
-    },
-    handle(handlerInput) {
-
-        return handlerInput.responseBuilder.getResponse();
-    }
-};
-
-const IntentReflectorHandler = {
-    canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest';
-    },
-    handle(handlerInput) {
-        const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
-        const speakOutput = `You are requesting ${intentName}`;
-
-        return handlerInput.responseBuilder
-            .speak(speakOutput)
-
-            .getResponse();
-    }
-};
 
 const ErrorHandler = {
     canHandle() {
@@ -110,7 +82,7 @@ const ErrorHandler = {
     handle(handlerInput) {
         return handlerInput.responseBuilder
             .speak(speakOutput)("Sorry, I didn't quite catch that. Would you like to say that again?")
-            .reprompt(speakOutput)
+            .reprompt(speakOutput)("Sorry, I am having a hard time hearing what you just said. Would you like to say that again?")
             .withShouldEndSession(false)
             .getResponse();
     },
@@ -121,7 +93,6 @@ const skillBuilder = Alexa.SkillBuilders.custom
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
-        ScholarshipIntentHandler,
         InstitutionsIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler,
