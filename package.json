@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build:zip": "zip students-lounge.zip ./node_modules ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
